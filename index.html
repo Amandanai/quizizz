@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Who's That Pokémon?</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+    rgba(230,57,70,0.75),
+    rgba(29,53,87,0.75)
+    ),
+    url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png");
+
+    background-size:cover;
+    background-position:center;
+}
+
+
+.box{
+
+    background:white;
+    width:90%;
+    max-width:600px;
+    padding:30px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 0 35px black;
+
+}
+
+
+h1{
+    color:#e63946;
+    text-shadow:2px 2px #ffd60a;
+}
+
+
+button{
+
+    width:100%;
+    padding:15px;
+    margin:8px;
+
+    border:0;
+    border-radius:20px;
+
+    background:#ffd60a;
+
+    font-size:17px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+
+button:hover{
+
+    transform:scale(1.05);
+    background:#ffb703;
+
+}
+
+
+#quiz,#final{
+
+    display:none;
+
+}
+
+
+.certo{
+
+    background:#2ecc71!important;
+    color:white;
+
+}
+
+
+.errado{
+
+    background:#e63946!important;
+    color:white;
+
+}
+
+
+.sombra{
+
+    width:220px;
+    height:220px;
+
+    background:black;
+
+    border-radius:50%;
+
+    margin:auto;
+
+}
+
+
+img{
+
+    width:220px;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<div id="inicio">
+
+<h1>⚡ WHO'S THAT POKÉMON ⚡</h1>
+
+<p>
+Responda 20 perguntas e descubra o Pokémon misterioso!
+</p>
+
+
+<button onclick="iniciar()">
+COMEÇAR
+</button>
+
+</div>
+
+
+
+<div id="quiz">
+
+
+<h2 id="contador"></h2>
+
+
+<h3 id="pergunta"></h3>
+
+
+<div id="opcoes"></div>
+
+
+<h3 id="msg"></h3>
+
+
+</div>
+
+
+
+
+<div id="final">
+
+
+<h1>🏆 RESULTADO</h1>
+
+
+<h2 id="resultado"></h2>
+
+
+<h2>WHO'S THAT POKÉMON?</h2>
+
+
+<div id="poke">
+
+<div class="sombra"></div>
+
+</div>
+
+
+<button onclick="revelar()">
+REVELAR
+</button>
+
+
+<h2 id="nome"></h2>
+
+
+<button onclick="location.reload()">
+JOGAR NOVAMENTE
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+let perguntas=[
+
+["Qual é o tipo do Pikachu?",["Água","Elétrico","Fogo","Grama"],"Elétrico"],
+
+["Quem evolui para Charizard?",["Charmander","Squirtle","Eevee","Pichu"],"Charmander"],
+
+["Qual é o Pokémon número 001?",["Mew","Bulbasaur","Pikachu","Gengar"],"Bulbasaur"],
+
+["Qual item captura Pokémon?",["Poção","Pokébola","Mapa","Bicicleta"],"Pokébola"],
+
+["Qual Pokémon é lendário?",["Mewtwo","Rattata","Pidgey","Zubat"],"Mewtwo"],
+
+["Tipo forte contra Água?",["Fogo","Grama","Normal","Gelo"],"Grama"],
+
+["Quem dorme bloqueando caminhos?",["Snorlax","Lucario","Gengar","Eevee"],"Snorlax"],
+
+["Primeira região Pokémon?",["Kanto","Alola","Kalos","Paldea"],"Kanto"],
+
+["Evolução do Magikarp?",["Lapras","Gyarados","Milotic","Kyogre"],"Gyarados"],
+
+["Pokémon Genético?",["Mewtwo","Mew","Ditto","Eevee"],"Mewtwo"],
+
+["Tipo do Charizard?",["Água","Fogo/Voador","Grama","Elétrico"],"Fogo/Voador"],
+
+["Pokémon com várias evoluções?",["Eevee","Onix","Machop","Zubat"],"Eevee"],
+
+["Pokémon rato elétrico?",["Pikachu","Mew","Dragonite","Gengar"],"Pikachu"],
+
+["Evolução do Squirtle?",["Blastoise","Venusaur","Charizard","Raichu"],"Blastoise"],
+
+["Fantasma e venenoso?",["Gengar","Lucario","Pidgey","Snorlax"],"Gengar"],
+
+["Pokémon dragão famoso?",["Dragonite","Psyduck","Rattata","Oddish"],"Dragonite"],
+
+["Pokémon que canta?",["Jigglypuff","Mewtwo","Onix","Machamp"],"Jigglypuff"],
+
+["Pokémon aço e lutador?",["Lucario","Pikachu","Eevee","Mew"],"Lucario"],
+
+["Controla o clima?",["Rayquaza","Pichu","Ditto","Abra"],"Rayquaza"],
+
+["Rei dos mares lendário?",["Kyogre","Pikachu","Charizard","Mew"],"Kyogre"]
+
+];
+
+
+
+let atual=0;
+
+let pontos=0;
+
+
+
+function iniciar(){
+
+inicio.style.display="none";
+
+quiz.style.display="block";
+
+mostrar();
+
+}
+
+
+
+
+function mostrar(){
+
+
+let p=perguntas[atual];
+
+
+contador.innerHTML=
+"Pergunta "+(atual+1)+"/20";
+
+
+pergunta.innerHTML=p[0];
+
+
+opcoes.innerHTML="";
+
+msg.innerHTML="";
+
+
+
+p[1].forEach(res=>{
+
+
+let botao=document.createElement("button");
+
+
+botao.innerHTML=res;
+
+
+
+botao.onclick=function(){
+
+
+document.querySelectorAll("#opcoes button")
+.forEach(b=>b.disabled=true);
+
+
+
+if(res==p[2]){
+
+pontos++;
+
+botao.classList.add("certo");
+
+msg.innerHTML="✅ ACERTOU!";
+
+}
+
+else{
+
+botao.classList.add("errado");
+
+msg.innerHTML=
+"❌ ERROU! Resposta: "+p[2];
+
+}
+
+
+
+setTimeout(()=>{
+
+
+atual++;
+
+
+if(atual<20){
+
+mostrar();
+
+}
+
+else{
+
+finalizar();
+
+}
+
+
+},1200);
+
+
+}
+
+
+
+opcoes.appendChild(botao);
+
+
+
+});
+
+
+}
+
+
+
+
+function finalizar(){
+
+quiz.style.display="none";
+
+final.style.display="block";
+
+
+resultado.innerHTML=
+"Você fez "+pontos+" de 20 pontos!";
+
+
+}
+
+
+
+
+function revelar(){
+
+
+poke.innerHTML=
+'<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png">';
+
+
+nome.innerHTML="⚡ Pikachu!";
+
+
+}
+
+
+</script>
+
+
+</body>
+</html>
